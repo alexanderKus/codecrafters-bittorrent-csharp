@@ -1,4 +1,5 @@
 using System.Text.Json;
+using codecrafters_bittorrent;
 
 var (command, param) = args.Length switch
 {
@@ -9,34 +10,9 @@ var (command, param) = args.Length switch
 
 if (command == "decode")
 {
-    var encodedValue = param;
-    if (char.IsDigit(encodedValue[0]))
-    {
-        // Example: "5:hello" -> "hello"
-        var colonIndex = encodedValue.IndexOf(':');
-        if (colonIndex != -1)
-        {
-            var strLength = int.Parse(encodedValue[..colonIndex]);
-            var strValue = encodedValue.Substring(colonIndex + 1, strLength);
-            Console.WriteLine(JsonSerializer.Serialize(strValue));
-        }
-        else
-        {
-            throw new InvalidOperationException("Invalid encoded value: " + encodedValue);
-        }
-    }
-    else if (encodedValue[0] == 'i')
-    {
-        var isNegative = encodedValue[1] == '-';
-        var integerString = isNegative ? encodedValue[2..^1] : encodedValue[1..^1];
-        var integer = long.Parse(integerString);
-        integer = isNegative ? -integer : integer;
-        Console.WriteLine(integer);
-    }
-    else
-    {
-        throw new InvalidOperationException("Unhandled encoded value: " + encodedValue);
-    }
+    BitTorrentParser parser = new();
+    var result = parser.Parse(param);
+    Console.WriteLine(result);
 }
 else
 {
