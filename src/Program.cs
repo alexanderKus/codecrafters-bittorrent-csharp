@@ -25,6 +25,13 @@ if (command == "decode")
             throw new InvalidOperationException("Invalid encoded value: " + encodedValue);
         }
     }
+    else if (encodedValue[0] == 'i')
+    {
+        var isNegative = encodedValue[1] == '-';
+        var integerString = isNegative ? encodedValue[2..^1] : encodedValue[1..^1];
+        var integer = int.Parse(integerString);
+        Console.WriteLine(integer);
+    }
     else
     {
         throw new InvalidOperationException("Unhandled encoded value: " + encodedValue);
