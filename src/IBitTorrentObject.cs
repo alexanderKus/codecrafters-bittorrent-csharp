@@ -52,3 +52,29 @@ public sealed class BitTorrentList : IBitTorrentObject
         return builder.ToString();
     }
 }
+
+public sealed class BitTorrentDictionary : IBitTorrentObject
+{
+    public Dictionary<BitTorrentString, IBitTorrentObject> Dictionary { get; } = [];
+
+    public BitTorrentDictionary() {}
+
+    public void Add(BitTorrentString key, IBitTorrentObject value) => Dictionary.Add(key, value);
+
+    public override string ToString()
+    {
+        StringBuilder builder = new();
+        builder.Append('{');
+        var i = 1;
+        foreach (var (key, value) in Dictionary)
+        {
+            builder.Append(key).Append(':').Append(value);
+            if (i < Dictionary.Count)
+                builder.Append(',');
+            i++;
+        }
+        builder.Append('}');
+
+        return builder.ToString();
+    }
+}

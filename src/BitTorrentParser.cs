@@ -12,6 +12,8 @@ public sealed class BitTorrentParser
             return ParseNumber(data);
         if (data[_index] == 'l')
             return ParseList(data);
+        if (data[_index] == 'd')
+            return ParseDictionary(data);
 
         throw new Exception("Unreachable");
     }
@@ -54,5 +56,19 @@ public sealed class BitTorrentParser
             values.Add(Parse(data));
         _index++;
         return new BitTorrentList(values);
+    }
+    
+    private BitTorrentDictionary ParseDictionary(ReadOnlySpan<char> data)
+    {
+        _index++;
+        BitTorrentDictionary dictionary = new();
+        while (data[_index] != 'e')
+        {
+            var key = (BitTorrentString)Parse(data);
+            var value = Parse(data);
+            dictionary.Add(key, value);
+        }
+        _index++;
+        return dictionary;
     }
 }
