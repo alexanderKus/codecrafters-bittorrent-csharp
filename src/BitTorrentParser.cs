@@ -52,6 +52,7 @@ public sealed class BitTorrentParser
         List<IBitTorrentObject> values = [];
         while (data[_index] != 'e')
             values.Add(Parse(data));
+        _index++;
         return new BitTorrentList(values);
     }
 }
