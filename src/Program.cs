@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using codecrafters_bittorrent;
 
@@ -16,7 +17,7 @@ if (command == "decode")
 }
 else if (command == "info")
 {
-    using var file = new StreamReader(param);
+    using var file = new StreamReader(param, Encoding.ASCII);
     var content = file.ReadToEnd();
     BitTorrentParser parser = new();
     var result = parser.Parse(content);
