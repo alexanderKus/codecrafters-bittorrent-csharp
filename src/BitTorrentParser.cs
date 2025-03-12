@@ -30,10 +30,10 @@ public sealed class BitTorrentParser
         {
             s++;
             AdvanceTill('e', data);
-            return new BitTorrentNumber(-int.Parse(data[s.._index]));
+            return new BitTorrentNumber(-long.Parse(data[s.._index]));
         }
         AdvanceTill('e', data);
-        return new BitTorrentNumber(int.Parse(data[s.._index++]));
+        return new BitTorrentNumber(long.Parse(data[s.._index++]));
     }
     
     private BitTorrentString ParseString(ReadOnlySpan<char> data)
