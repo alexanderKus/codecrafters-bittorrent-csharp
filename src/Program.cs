@@ -18,10 +18,9 @@ else if (command == "info")
 {
     using var file = new StreamReader(param);
     var content = file.ReadToEnd();
-    Console.WriteLine($"CONTENT: {content}");
     BitTorrentParser parser = new();
     var result = parser.Parse(content);
-    Console.WriteLine(result);
+    Console.WriteLine(BitTorrentParser.ParseMetainfo(result));
 }
 else
 {

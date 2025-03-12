@@ -71,4 +71,23 @@ public sealed class BitTorrentParser
         _index++;
         return dictionary;
     }
+
+    public static BitTorrentMetainfo ParseMetainfo(IBitTorrentObject value)
+    {
+        if (value is not BitTorrentDictionary dictionary)
+            throw new Exception("WFT?");
+        var info = ((BitTorrentDictionary)dictionary.GetByString("info"));
+        return new BitTorrentMetainfo
+        {
+            Announce = ((BitTorrentString)dictionary.GetByString("announce")).Value,
+            CreatedBy = ((BitTorrentString)dictionary.GetByString("created by")).Value,
+            Info = new BitTorrentMetinfoInfo()
+            {
+                Length = ((BitTorrentNumber)info.GetByString("length")).Value,
+                Name = ((BitTorrentString)info.GetByString("name")).Value,
+                PieceLength = ((BitTorrentNumber)info.GetByString("piece length")).Value,
+                Pieces = ((BitTorrentString)info.GetByString("pieces")).Value
+            }
+        };
+    }
 }

@@ -55,26 +55,67 @@ public sealed class BitTorrentList : IBitTorrentObject
 
 public sealed class BitTorrentDictionary : IBitTorrentObject
 {
-    public Dictionary<BitTorrentString, IBitTorrentObject> Dictionary { get; } = [];
+    public Dictionary<BitTorrentString, IBitTorrentObject> Dict { get; } = [];
 
     public BitTorrentDictionary() {}
 
-    public void Add(BitTorrentString key, IBitTorrentObject value) => Dictionary.Add(key, value);
+    public void Add(BitTorrentString key, IBitTorrentObject value) => Dict.Add(key, value);
+
+    public IBitTorrentObject GetByString(string keyStr)
+    {
+        foreach (var (key, value) in Dict)
+        {
+            if (key.Value == keyStr)
+                return value;
+        }
+
+        throw new Exception($"Not Found Value for {keyStr}");
+    }
 
     public override string ToString()
     {
         StringBuilder builder = new();
         builder.Append('{');
         var i = 1;
-        foreach (var (key, value) in Dictionary)
+        foreach (var (key, value) in Dict)
         {
             builder.Append(key).Append(':').Append(value);
-            if (i < Dictionary.Count)
+            if (i < Dict.Count)
                 builder.Append(',');
             i++;
         }
         builder.Append('}');
 
+        return builder.ToString();
+    }
+}
+
+public sealed class BitTorrentMetainfo
+{
+    public string? Announce { get; init; }
+    public string? CreatedBy { get; init; }
+    public BitTorrentMetinfoInfo? Info { get; init; }
+
+    public override string ToString()
+    {
+        StringBuilder builder = new();
+        if (Announce is not null) builder.Append("Tracker URL: ").Append(Announce).Append('\n');
+        if (Info is not null) builder.Append(Info);
+        return builder.ToString();
+    }
+}
+
+public sealed class BitTorrentMetinfoInfo
+{
+    public long? Length { get; init; }
+    public string? Name { get; init; }
+    public long PieceLength { get; init; }
+    public string? Pieces { get; init; }
+
+    public override string ToString()
+    {
+        StringBuilder builder = new();
+        if (Length is not null) builder.Append("Length: ").Append(Length).Append('\n');
         return builder.ToString();
     }
 }
