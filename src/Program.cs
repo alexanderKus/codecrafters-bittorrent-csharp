@@ -30,6 +30,7 @@ if (command == "decode")
         var isNegative = encodedValue[1] == '-';
         var integerString = isNegative ? encodedValue[2..^1] : encodedValue[1..^1];
         var integer = long.Parse(integerString);
+        integer = isNegative ? -integer : integer;
         Console.WriteLine(integer);
     }
     else
