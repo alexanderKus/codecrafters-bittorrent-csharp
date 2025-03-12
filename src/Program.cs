@@ -14,6 +14,15 @@ if (command == "decode")
     var result = parser.Parse(param);
     Console.WriteLine(result);
 }
+else if (command == "info")
+{
+    using var file = new StreamReader(param);
+    var content = file.ReadToEnd();
+    Console.WriteLine($"CONTENT: {content}");
+    BitTorrentParser parser = new();
+    var result = parser.Parse(content);
+    Console.WriteLine(result);
+}
 else
 {
     throw new InvalidOperationException($"Invalid command: {command}");
