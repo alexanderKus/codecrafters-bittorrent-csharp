@@ -1,5 +1,4 @@
 using System.Text;
-using System.Text.Json;
 using codecrafters_bittorrent;
 
 var (command, param) = args.Length switch
@@ -21,6 +20,7 @@ else if (command == "info")
     var content = file.ReadToEnd();
     BitTorrentParser parser = new();
     var result = parser.Parse(content);
+    Console.WriteLine(result);
     Console.WriteLine(BitTorrentParser.ParseMetainfo(result));
 }
 else
