@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 namespace codecrafters_bittorrent;
 
 public sealed class BitTorrentParser
@@ -72,11 +74,15 @@ public sealed class BitTorrentParser
         return dictionary;
     }
 
-    public static BitTorrentMetainfo ParseMetainfo(IBitTorrentObject value)
+    public static BitTorrentMetainfo ParseMetainfo(ReadOnlySpan<byte> bytes, ReadOnlySpan<char> stream, IBitTorrentObject value)
     {
         if (value is not BitTorrentDictionary dictionary)
             throw new Exception("WFT?");
-        var info = ((BitTorrentDictionary)dictionary.GetByString("info"));
+        var info = (BitTorrentDictionary)dictionary.GetByString("info");
+        var infoHashStart = stream.IndexOf(BitTorrentMetainfo.InfoHashMarker, StringComparison.Ordinal) 
+            + BitTorrentMetainfo.InfoHashMarker.Length - 1;
+        var chunk = bytes[infoHashStart..^1];
+        var hash = SHA1.HashData(chunk);
         return new BitTorrentMetainfo
         {
             Announce = ((BitTorrentString)dictionary.GetByString("announce")).Value,
@@ -87,7 +93,8 @@ public sealed class BitTorrentParser
                 Name = ((BitTorrentString)info.GetByString("name")).Value,
                 PieceLength = ((BitTorrentNumber)info.GetByString("piece length")).Value,
                 Pieces = ((BitTorrentString)info.GetByString("pieces")).Value
-            }
+            },
+            Hash = Convert.ToHexString(hash).ToLower()
         };
     }
 }

@@ -92,15 +92,18 @@ public sealed class BitTorrentDictionary : IBitTorrentObject
 
 public sealed class BitTorrentMetainfo
 {
+    public const string InfoHashMarker = "4:infod";
     public string? Announce { get; init; }
     public string? CreatedBy { get; init; }
     public BitTorrentMetinfoInfo? Info { get; init; }
+    public string? Hash { get; init; }
 
     public override string ToString()
     {
         StringBuilder builder = new();
         if (Announce is not null) builder.Append("Tracker URL: ").Append(Announce).Append('\n');
         if (Info is not null) builder.Append(Info);
+        if (Hash is not null) builder.Append("Hash info: ").Append(Hash).Append('\n');
         return builder.ToString();
     }
 }

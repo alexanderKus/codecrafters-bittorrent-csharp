@@ -18,12 +18,13 @@ else if (command == "info")
 {
     using var file = new StreamReader(param, Encoding.ASCII);
     var content = file.ReadToEnd();
+    var bytes = File.ReadAllBytes(param);
     BitTorrentParser parser = new();
     var result = parser.Parse(content);
-    Console.WriteLine(result);
-    Console.WriteLine(BitTorrentParser.ParseMetainfo(result));
+    //Console.WriteLine(result);
+    Console.WriteLine(BitTorrentParser.ParseMetainfo(bytes, content, result));
 }
 else
 {
     throw new InvalidOperationException($"Invalid command: {command}");
-}
+} 
