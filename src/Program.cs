@@ -22,7 +22,7 @@ else if (command == "info")
     BitTorrentParser parser = new();
     var result = parser.Parse(content);
     //Console.WriteLine(result);
-    Console.WriteLine(BitTorrentParser.ParseMetainfo(bytes, content, result));
+    Console.WriteLine(BitTorrentParser.ParseMetainfo(bytes, content, result).Hash);
 }
 else
 {
