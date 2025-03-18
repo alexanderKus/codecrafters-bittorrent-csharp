@@ -22,8 +22,8 @@ else if (command == "info")
     BitTorrentParser parser = new();
     var result = parser.Parse(content);
     //Console.WriteLine(result);
-    var hash = BitTorrentParser.ParseMetainfo(bytes, content, result).Hash;
-    Console.WriteLine($"Info Hash: {hash}");
+    var info = BitTorrentParser.ParseMetainfo(bytes, content, result);
+    Console.WriteLine($"Tracker URL: {info.Announce}\nLength: {info.Info.Length}\nInfo Hash: {info.Hash}");
 }
 else
 {
