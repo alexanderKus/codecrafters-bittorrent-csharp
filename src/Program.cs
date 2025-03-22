@@ -23,7 +23,14 @@ else if (command == "info")
     var result = parser.Parse(content);
     //Console.WriteLine(result);
     var info = BitTorrentParser.ParseMetainfo(bytes, content, result);
-    Console.WriteLine($"Tracker URL: {info.Announce}\nLength: {info.Info.Length}\nInfo Hash: {info.Hash}");
+    Console.WriteLine($"Tracker URL: {info.Announce}\nLength: {info.Info!.Length}\nInfo Hash: {info.Hash}");
+    Console.WriteLine($"Piece Length: {info.Info.PieceLength}");
+    var pieces = info!.Info!.Pieces!.Chunk(20);
+    foreach (var piece in pieces)
+    {
+        byte[] ba = Encoding.Default.GetBytes(piece);
+        Console.WriteLine(Convert.ToHexString(ba).ToLower());
+    }
 }
 else
 {
