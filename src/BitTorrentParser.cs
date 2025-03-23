@@ -87,7 +87,7 @@ public sealed class BitTorrentParser
         {
             var key = (BitTorrentString)Parse(data);
             var value = key.Value is "pieces" or "peers" ? ParseByteArray(data) : Parse(data);
-            Console.WriteLine($"addint {key}:{value}");
+            Console.WriteLine($"adding {key}:{value}. index:{_index},tl: {data.Length}");
             dictionary.Add(key, value);
         }
         _index++;
