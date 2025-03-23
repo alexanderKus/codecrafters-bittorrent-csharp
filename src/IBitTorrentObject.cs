@@ -110,6 +110,7 @@ public sealed class BitTorrentMetainfo
     public string? CreatedBy { get; init; }
     public BitTorrentMetinfoInfo? Info { get; init; }
     public string? Hash { get; init; }
+    public byte[]? HashBytes { get; init; }
 
     public override string ToString()
     {
@@ -135,3 +136,9 @@ public sealed class BitTorrentMetinfoInfo
         return builder.ToString();
     }
 }
+
+public sealed class BitTorrentPeerResponse
+{
+    public int Interval { get; init; }
+    public string Peers { get; init; }
+} 

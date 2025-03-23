@@ -23,6 +23,12 @@ public sealed class BitTorrentParser
         throw new Exception("Unreachable");
     }
 
+    public IBitTorrentObject FreshParse(ReadOnlySpan<char> data)
+    {
+        _index = 0;
+        return Parse(data);
+    }
+    
     private void AdvanceTill(char c, ReadOnlySpan<char> data)
     {
         while (data[_index] != c) _index++;
@@ -80,7 +86,7 @@ public sealed class BitTorrentParser
         while (data[_index] != 'e')
         {
             var key = (BitTorrentString)Parse(data);
-            var value = key.Value == "pieces" ? ParseByteArray(data) : Parse(data);
+            var value = key.Value is "pieces" or "peers" ? ParseByteArray(data) : Parse(data);
             dictionary.Add(key, value);
         }
         _index++;
@@ -107,7 +113,8 @@ public sealed class BitTorrentParser
                 PieceLength = ((BitTorrentNumber)info.GetByString("piece length")).Value,
                 Pieces = ((BitTorrentByteArray)info.GetByString("pieces")).Value
             },
-            Hash = Convert.ToHexString(hash).ToLower()
+            Hash = Convert.ToHexString(hash).ToLower(),
+            HashBytes = hash
         };
     }
 }
