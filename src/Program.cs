@@ -81,7 +81,7 @@ else if (command == "handshake")
     var addr = args[2].Split(':');
     var tcpClient = new TcpClient(addr[0], int.Parse(addr[1]));
     var buffer = new byte[512];
-    await using var stream = tcpClient.GetStream();
+    using var stream = tcpClient.GetStream();
     stream.Write(data);
     stream.Flush();
     stream.Read(buffer);
