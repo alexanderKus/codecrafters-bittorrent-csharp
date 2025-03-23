@@ -74,7 +74,6 @@ public sealed class BitTorrentParser
         var s = _index;
         AdvanceTill(':', data);
         var len = int.Parse(data[s.._index]);
-        Console.WriteLine($"Len: {len}");
         var val = _bytes[++_index..(_index+len)].ToArray();
         _index += len;
         return new BitTorrentByteArray(len, val);
@@ -88,6 +87,7 @@ public sealed class BitTorrentParser
         {
             var key = (BitTorrentString)Parse(data);
             var value = key.Value is "pieces" or "peers" ? ParseByteArray(data) : Parse(data);
+            Console.WriteLine($"addint {key}:{value}");
             dictionary.Add(key, value);
         }
         _index++;
