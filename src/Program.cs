@@ -26,6 +26,7 @@ else if (command == "info")
     Console.WriteLine($"Tracker URL: {info.Announce}\nLength: {info.Info!.Length}\nInfo Hash: {info.Hash}");
     Console.WriteLine($"Piece Length: {info.Info.PieceLength}");
     var pieces = info!.Info!.Pieces!.Chunk(20);
+    Console.WriteLine("Piece Hashes:");
     foreach (var piece in pieces)
     {
         Console.WriteLine(Convert.ToHexString(piece).ToLower());
