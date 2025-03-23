@@ -1,4 +1,6 @@
 using System.Buffers.Binary;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Web;
 using codecrafters_bittorrent;
@@ -56,6 +58,34 @@ else if (command == "peers")
     {
         Console.WriteLine($"{peer[0]}.{peer[1]}.{peer[2]}.{peer[3]}:{BinaryPrimitives.ReadUInt16BigEndian(peer.AsSpan()[4..])}");
     }
+}
+else if (command == "handshake")
+{
+    using var file = new StreamReader(param, Encoding.ASCII);
+    var content = file.ReadToEnd();
+    var bytes = File.ReadAllBytes(param);
+    BitTorrentParser parser = new(bytes);
+    var result = parser.Parse(content);
+    var info = BitTorrentParser.ParseMetainfo(bytes, content, result);
+    var preData = new byte[]
+    {
+        0x13, 0x42, 0x69, 0x74, 0x54, 0x6F, 0x72, 0x72, 0x65, 0x6E, 0x74, 0x20, 0x70, 0x72, 0x6F, 0x74, 0x6F, 0x63,
+        0x6F, 0x6C, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
+    };
+    var tempData = preData.Concat(info.HashBytes);
+    var postData = new byte[]
+    {
+        0x61, 0x73, 0x64, 0x66, 0x68, 0x6A, 0x6B, 0x6C, 0x7A, 0x78, 0x63, 0x76, 0x62, 0x62, 0x6E, 0x6D, 0x71, 0x77, 0x65
+    };
+    var data = tempData.Concat(postData).ToArray();
+    var addr = args[3].Split(':');
+    var tcpClient = new TcpClient();
+    tcpClient.Connect(addr[0], int.Parse(addr[1]));
+    var buffer = new byte[512];
+    await using var stream = tcpClient.GetStream();
+    stream.Write(data);
+    stream.Read(buffer);
+    Console.WriteLine($"Peer ID: {Convert.ToHexString(buffer[48..]).ToLower()}");
 }
 else
 {
