@@ -87,8 +87,10 @@ public sealed class BitTorrentParser
         while (data[_index] != 'e')
         {
             var key = (BitTorrentString)Parse(data);
-            var value = key.Value is "pieces" or "peers" ? ParseByteArray(data) : Parse(data);
+            var areBytes = key.Value is "pieces" or "peers";
+            var value = areBytes ? ParseByteArray(data) : Parse(data);
             dictionary.Add(key, value);
+            if (areBytes) return dictionary;
         }
         _index++;
         return dictionary;
