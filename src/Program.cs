@@ -48,7 +48,6 @@ else if (command == "peers")
     var responseBytes = await response.Content.ReadAsByteArrayAsync();
     using var reader = new StreamReader(await response.Content.ReadAsStreamAsync());
     var responseString = reader.ReadToEnd();
-    Console.WriteLine(Convert.ToHexString(responseBytes).ToLower());
     parser = new BitTorrentParser(responseBytes);
     var parsedResponse = parser.Parse(responseString);
     var peers = ((BitTorrentByteArray)((BitTorrentDictionary)parsedResponse).GetByString("peers")).Value.Chunk(6);
