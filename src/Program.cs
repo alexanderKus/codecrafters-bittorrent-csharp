@@ -67,8 +67,7 @@ else if (command == "handshake")
     BitTorrentParser parser = new(bytes);
     var result = parser.Parse(content);
     var info = BitTorrentParser.ParseMetainfo(bytes, content, result);
-    var data = 
-        Array.Empty<byte>()
+    var data = Array.Empty<byte>()
             .Append((byte)19)
             .Concat("BitTorrent protocol"u8.ToArray())
             .Concat(new byte[8])
