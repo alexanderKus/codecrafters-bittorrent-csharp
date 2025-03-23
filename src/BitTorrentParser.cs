@@ -76,7 +76,7 @@ public sealed class BitTorrentParser
         var len = int.Parse(data[s.._index]);
         var val = _bytes[++_index..(_index+len)].ToArray();
         _index += len;
-        if (data.Length != _bytes.Length) _index++;
+        if (data.Length != _bytes.Length) _index--;
         return new BitTorrentByteArray(len, val);
     }
     
