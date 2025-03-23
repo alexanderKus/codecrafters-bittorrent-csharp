@@ -53,6 +53,19 @@ public sealed class BitTorrentList : IBitTorrentObject
     }
 }
 
+public sealed class BitTorrentByteArray : IBitTorrentObject
+{
+    public long Length { get; }
+    public byte[] Value { get; }
+    
+    public BitTorrentByteArray(long len, byte[] value) => (Length, Value) = (len, value);
+
+    public override string ToString()
+    {
+        return Convert.ToHexString(Value).ToLower();
+    }
+}
+
 public sealed class BitTorrentDictionary : IBitTorrentObject
 {
     public Dictionary<BitTorrentString, IBitTorrentObject> Dict { get; } = [];
@@ -113,7 +126,7 @@ public sealed class BitTorrentMetinfoInfo
     public long? Length { get; init; }
     public string? Name { get; init; }
     public long PieceLength { get; init; }
-    public string? Pieces { get; init; }
+    public byte[]? Pieces { get; init; }
 
     public override string ToString()
     {

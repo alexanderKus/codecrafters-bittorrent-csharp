@@ -5,6 +5,9 @@ namespace codecrafters_bittorrent;
 public sealed class BitTorrentParser
 {
     private int _index = 0;
+    private ReadOnlyMemory<byte> _bytes;
+
+    public BitTorrentParser(ReadOnlyMemory<byte> bytes) => _bytes = bytes.ToArray();
     
     public IBitTorrentObject Parse(ReadOnlySpan<char> data)
     {
@@ -60,6 +63,16 @@ public sealed class BitTorrentParser
         return new BitTorrentList(values);
     }
     
+    private BitTorrentByteArray ParseByteArray(ReadOnlySpan<char> data)
+    {
+        var s = _index;
+        AdvanceTill(':', data);
+        var len = int.Parse(data[s.._index]);
+        var val = _bytes[++_index..(_index+len)].ToArray();
+        _index += len;
+        return new BitTorrentByteArray(len, val);
+    }
+    
     private BitTorrentDictionary ParseDictionary(ReadOnlySpan<char> data)
     {
         _index++;
@@ -67,7 +80,7 @@ public sealed class BitTorrentParser
         while (data[_index] != 'e')
         {
             var key = (BitTorrentString)Parse(data);
-            var value = Parse(data);
+            var value = key.Value == "pieces" ? ParseByteArray(data) : Parse(data);
             dictionary.Add(key, value);
         }
         _index++;
@@ -92,7 +105,7 @@ public sealed class BitTorrentParser
                 Length = ((BitTorrentNumber)info.GetByString("length")).Value,
                 Name = ((BitTorrentString)info.GetByString("name")).Value,
                 PieceLength = ((BitTorrentNumber)info.GetByString("piece length")).Value,
-                Pieces = ((BitTorrentString)info.GetByString("pieces")).Value
+                Pieces = ((BitTorrentByteArray)info.GetByString("pieces")).Value
             },
             Hash = Convert.ToHexString(hash).ToLower()
         };

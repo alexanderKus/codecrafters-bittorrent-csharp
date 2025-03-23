@@ -10,7 +10,7 @@ var (command, param) = args.Length switch
 
 if (command == "decode")
 {
-    BitTorrentParser parser = new();
+    BitTorrentParser parser = new(Array.Empty<byte>());
     var result = parser.Parse(param);
     Console.WriteLine(result);
 }
@@ -19,7 +19,7 @@ else if (command == "info")
     using var file = new StreamReader(param, Encoding.ASCII);
     var content = file.ReadToEnd();
     var bytes = File.ReadAllBytes(param);
-    BitTorrentParser parser = new();
+    BitTorrentParser parser = new(bytes);
     var result = parser.Parse(content);
     //Console.WriteLine(result);
     var info = BitTorrentParser.ParseMetainfo(bytes, content, result);
@@ -28,8 +28,7 @@ else if (command == "info")
     var pieces = info!.Info!.Pieces!.Chunk(20);
     foreach (var piece in pieces)
     {
-        byte[] ba = Encoding.Default.GetBytes(piece);
-        Console.WriteLine(Convert.ToHexString(ba).ToLower());
+        Console.WriteLine(Convert.ToHexString(piece).ToLower());
     }
 }
 else
