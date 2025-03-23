@@ -136,9 +136,3 @@ public sealed class BitTorrentMetinfoInfo
         return builder.ToString();
     }
 }
-
-public sealed class BitTorrentPeerResponse
-{
-    public int Interval { get; init; }
-    public string Peers { get; init; }
-} 
