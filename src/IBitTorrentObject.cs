@@ -83,7 +83,6 @@ public sealed class BitTorrentDictionary : IBitTorrentObject
         }
 
         return new BitTorrentString(0, string.Empty);
-        throw new Exception($"Not Found Value for {keyStr}");
     }
 
     public override string ToString()
