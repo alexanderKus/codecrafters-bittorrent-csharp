@@ -67,17 +67,14 @@ else if (command == "handshake")
     BitTorrentParser parser = new(bytes);
     var result = parser.Parse(content);
     var info = BitTorrentParser.ParseMetainfo(bytes, content, result);
-    var preData = new byte[]
-    {
-        0x13, 0x42, 0x69, 0x74, 0x54, 0x6F, 0x72, 0x72, 0x65, 0x6E, 0x74, 0x20, 0x70, 0x72, 0x6F, 0x74, 0x6F, 0x63,
-        0x6F, 0x6C, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
-    };
-    var tempData = preData.Concat(info.HashBytes).ToArray();
-    var postData = new byte[]
-    {
-        0x61, 0x73, 0x64, 0x66, 0x68, 0x6A, 0x6B, 0x6C, 0x7A, 0x78, 0x63, 0x76, 0x62, 0x62, 0x6E, 0x6D, 0x71, 0x77, 0x65
-    };
-    var data = tempData.Concat(postData).ToArray();
+    var data = 
+        Array.Empty<byte>()
+            .Append((byte)19)
+            .Concat("BitTorrent protocol"u8.ToArray())
+            .Concat(new byte[8])
+            .Concat(info.HashBytes)
+            .Concat("00112233445566778899"u8.ToArray())
+            .ToArray();
     var addr = args[2].Split(':');
     var tcpClient = new TcpClient(addr[0], int.Parse(addr[1]));
     var buffer = new byte[512];
