@@ -80,7 +80,7 @@ else if (command == "handshake")
     var data = tempData.Concat(postData).ToArray();
     var addr = args[2].Split(':');
     var tcpClient = new TcpClient();
-    Console.WriteLine(addr[0], ":", addr[1]);
+    Console.WriteLine($"{addr[0]}:{addr[1]}");
     tcpClient.Connect(addr[0], int.Parse(addr[1]));
     var buffer = new byte[512];
     await using var stream = tcpClient.GetStream();
