@@ -77,7 +77,7 @@ else if (command == "handshake")
             .ToArray();
     var addr = args[2].Split(':');
     var tcpClient = new TcpClient(addr[0], int.Parse(addr[1]));
-    var buffer = new byte[512];
+    var buffer = new byte[data.Length];
     using var stream = tcpClient.GetStream();
     stream.Write(data);
     stream.Flush();
