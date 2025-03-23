@@ -78,7 +78,7 @@ else if (command == "handshake")
         0x61, 0x73, 0x64, 0x66, 0x68, 0x6A, 0x6B, 0x6C, 0x7A, 0x78, 0x63, 0x76, 0x62, 0x62, 0x6E, 0x6D, 0x71, 0x77, 0x65
     };
     var data = tempData.Concat(postData).ToArray();
-    var addr = args[3].Split(':');
+    var addr = args[2].Split(':');
     var tcpClient = new TcpClient();
     Console.WriteLine(addr);
     tcpClient.Connect(addr[0], int.Parse(addr[1]));
