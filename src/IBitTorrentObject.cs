@@ -136,3 +136,12 @@ public sealed class BitTorrentMetinfoInfo
         return builder.ToString();
     }
 }
+
+public enum BitTorrentMessageType
+{
+    Unchoke = 1,
+    Interested = 2,
+    BitField = 5,
+    Request = 6,
+    Piece = 7
+}
