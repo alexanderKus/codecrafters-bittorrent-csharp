@@ -123,11 +123,11 @@ else if (command == "download_piece")
         stream.Read(bitFieldBuffer);
         Console.WriteLine($"BitFieldBuffer: {Convert.ToHexString(buffer).ToLower()}");
         var interestedBuffer = Array.Empty<byte>()
-            .Concat(new byte[4])
+            .Concat(new byte [] {0,0,0,1})
             .Append((byte)BitTorrentMessageType.Interested)
             .ToArray();
         stream.Write(interestedBuffer);
-        var unchokeBuffer = new byte[5];
+        var unchokeBuffer = new byte[128];
         stream.Read(unchokeBuffer);
         Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(buffer).ToLower()}");
     }
