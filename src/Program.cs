@@ -127,7 +127,7 @@ else if (command == "download_piece")
         Console.WriteLine($"Peer ID: {Convert.ToHexString(buffer[48..]).ToLower()}");
         var bitFieldBuffer = new byte[128];
         stream.Read(bitFieldBuffer);
-        Console.WriteLine($"BitFieldBuffer: {Convert.ToHexString(bitFieldBuffer).ToLower()}");
+        //Console.WriteLine($"BitFieldBuffer: {Convert.ToHexString(bitFieldBuffer).ToLower()}");
         var interestedBuffer = Array.Empty<byte>()
             .Concat(new byte [] {0,0,0,1})
             .Append((byte)BitTorrentMessageType.Interested)
@@ -136,7 +136,7 @@ else if (command == "download_piece")
         stream.Flush();
         var unchokeBuffer = new byte[128];
         stream.Read(unchokeBuffer);
-        Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
+        //Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
         var totalReadByte = 0;
         for (var i = 0; totalReadByte < info!.Info!.PieceLength; i++)
         {
@@ -160,9 +160,9 @@ else if (command == "download_piece")
                 Console.WriteLine("Why piece len is zero?");
                 break;
             }
-            Console.WriteLine($"reading pieceLen {pieceLen}");
+            Console.WriteLine($"--->Reading pieceLen {pieceLen}");
             stream.ReadByte(); // messageId
-            var pieceBuffer = new byte[pieceLen-1];
+            var pieceBuffer = new byte[pieceLen];
             stream.Read(pieceBuffer, 0 ,pieceBuffer.Length);
             //Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
             piece.AddRange(pieceBuffer[8..].ToArray());
