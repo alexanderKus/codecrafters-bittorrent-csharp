@@ -152,6 +152,8 @@ else if (command == "download_piece")
             piece.AddRange(pieceBuffer[14..].ToArray());
         }
         var pieceHash = SHA1.HashData(piece.ToArray());
+        // TODO: compare hashes
+        Console.WriteLine($"Piece Hash: {Convert.ToHexString(pieceHash).ToLower()}");
         Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
         outputFile.Write(piece.ToArray());
     }
