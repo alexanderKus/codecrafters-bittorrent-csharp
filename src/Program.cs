@@ -174,7 +174,6 @@ else if (command == "download_piece")
         Console.WriteLine($"Piece Len: {piece.Count}");
         pieces.AddRange(piece);
         Console.WriteLine("----------------------------------------------------");
-        break;
     }
     File.WriteAllBytes(path, pieces.ToArray());
 
