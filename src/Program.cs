@@ -160,7 +160,7 @@ else if (command == "download_piece")
         {
             Console.WriteLine($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
             Console.WriteLine($"All hashes:\n{string.Join('\n', hashes)}");
-            Console.WriteLine($"Piece data:\n{Convert.ToHexString(piece.ToArray()).ToLower()}");
+            Console.WriteLine($"Piece  data:\n{Convert.ToHexString(piece.ToArray()).ToLower()}");
             throw new Exception($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
         }
         Console.WriteLine($"Piece Hash: {Convert.ToHexString(pieceHash).ToLower()}");
