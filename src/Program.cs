@@ -198,7 +198,6 @@ else if (command == "download")
     var parsedResponse = parser.Parse(responseString);
     var peers = ((BitTorrentByteArray)((BitTorrentDictionary)parsedResponse).GetByString("peers")).Value.Chunk(6).ToArray();
     var hashes = info!.Info!.Pieces!.Chunk(20).Select(x => Convert.ToHexString(x).ToLower()).ToArray();
-    Console.WriteLine(string.Join('\n', hashes));
     List<byte> pieces = [];
     var index = 0;
     Console.WriteLine("----------------------------------------------------");
@@ -230,7 +229,9 @@ else if (command == "download")
     stream.Read(unchokeBuffer);
     //Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
     List<byte> piece = [];
-    for (int j = 0; j < info.Info.Pieces.Length / 20; j++)
+    var m = info.Info.Pieces.Length / 20;
+    Console.WriteLine($"Max: {m}");
+    for (int j = 0; j < m; j++)
     {
         var fileLength = (int)info!.Info!.Length;
         var pieceLength = (int)info!.Info!.PieceLength;
@@ -263,6 +264,7 @@ else if (command == "download")
             piece.AddRange(pieceBuffer[13..(13+responseBlockLength)].ToArray());
         }
         var pieceHash = SHA1.HashData(piece.ToArray());
+        if (Convert.ToHexString(pieceHash).ToLower() == hashes[index]) break;
         Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[index]}");
         Console.WriteLine($"Piece Len: {piece.Count}");
         pieces.AddRange(piece);
