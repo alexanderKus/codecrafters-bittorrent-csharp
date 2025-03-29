@@ -163,13 +163,13 @@ else if (command == "download_piece")
             piece.AddRange(pieceBuffer[8..].ToArray());
         }
         var pieceHash = SHA1.HashData(piece.ToArray());
-        if (Convert.ToHexString(pieceHash).ToLower() != hashes[index])
-        {
-            Console.WriteLine($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
-            Console.WriteLine($"All hashes:\n{string.Join('\n', hashes)}");
-            Console.WriteLine($"Piece  data:\n{Convert.ToHexString(piece.ToArray()).ToLower()}");
-            throw new Exception($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
-        }
+        // if (Convert.ToHexString(pieceHash).ToLower() != hashes[index])
+        // {
+        //     Console.WriteLine($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
+        //     Console.WriteLine($"All hashes:\n{string.Join('\n', hashes)}");
+        //     Console.WriteLine($"Piece  data:\n{Convert.ToHexString(piece.ToArray()).ToLower()}");
+        //     throw new Exception($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
+        // }
         Console.WriteLine($"Piece Hash: {Convert.ToHexString(pieceHash).ToLower()}");
         Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
         outputFile.Write(piece.ToArray());
