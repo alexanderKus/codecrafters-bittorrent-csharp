@@ -154,7 +154,7 @@ else if (command == "download_piece")
             Array.Reverse(length);
             Array.Reverse(correctPieceIndex);
             var requestBuffer = Array.Empty<byte>()
-                .Concat(new byte[] {0,0,0,13})
+                .Concat(BitConverter.GetBytes(13))
                 .Append((byte)BitTorrentMessageType.Request)
                 .Concat(correctPieceIndex)
                 .Concat(begin)
