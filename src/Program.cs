@@ -149,11 +149,13 @@ else if (command == "download_piece")
             Console.WriteLine($"RequestBuffer id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
             stream.Write(requestBuffer);
             stream.Flush();
-            
-            var pieceBuffer = new byte[1037];
+
+            var pieceLen = new byte[4];
+            stream.Read(pieceLen, 0, 4);
+            var pieceBuffer = new byte[BinaryPrimitives.ReadUInt16BigEndian(pieceLen)];
             stream.Read(pieceBuffer);
             Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
-            piece.AddRange(pieceBuffer[13..].ToArray());
+            piece.AddRange(pieceBuffer[9..].ToArray());
         }
         var pieceHash = SHA1.HashData(piece.ToArray());
         if (Convert.ToHexString(pieceHash).ToLower() != hashes[index])
