@@ -134,10 +134,9 @@ else if (command == "download_piece")
         {
             var len = (i == 15 ? info!.Info!.Length % info!.Info!.PieceLength : info!.Info!.PieceLength) ?? throw new Exception("Cannot calculate length of a piece");
             var requestBuffer = Array.Empty<byte>()
-                .Concat(new byte [] {0,0,0,19})
+                .Concat(new byte [] {0,0,0,17})
                 .Append((byte)BitTorrentMessageType.Request)
-                .Append(pieceIndex).Append((byte)0x0).Append((byte)0x0).Append((byte)0x0)
-                .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append((byte)0x0) // 0 as integer
+                .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append(pieceIndex)
                 .Concat(BitConverter.GetBytes(i*(2^14)))
                 .Concat(BitConverter.GetBytes((int)len))
                 .ToArray();
@@ -148,7 +147,6 @@ else if (command == "download_piece")
             stream.Read(pieceBuffer);
             Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
         }
-        Console.WriteLine("here2");
         
     }
 }
