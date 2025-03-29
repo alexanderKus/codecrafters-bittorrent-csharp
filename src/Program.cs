@@ -1,5 +1,7 @@
 using System.Buffers.Binary;
 using System.Net.Sockets;
+using System.Runtime.Intrinsics.Arm;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using codecrafters_bittorrent;
@@ -130,6 +132,7 @@ else if (command == "download_piece")
         var unchokeBuffer = new byte[128];
         stream.Read(unchokeBuffer);
         Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
+        List<byte> piece = new();
         for (var i = 0; i < 16; i++)
         {
             var len = (i == 15 ? info!.Info!.Length % info!.Info!.PieceLength : info!.Info!.PieceLength) ?? throw new Exception("Cannot calculate length of a piece");
@@ -146,8 +149,10 @@ else if (command == "download_piece")
             var pieceBuffer = new byte[1024];
             stream.Read(pieceBuffer);
             Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
+            piece.AddRange(pieceBuffer.ToArray());
         }
-        
+        var pieceHash = SHA1.HashData(piece.ToArray());
+        outputFile.Write(piece.ToArray());
     }
 }
 else
