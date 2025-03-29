@@ -140,7 +140,7 @@ else if (command == "download_piece")
         {
             var size = (int)Math.Min(info!.Info!.Length ?? 0 - i * info!.Info!.PieceLength, info!.Info!.PieceLength);
             var requestBuffer = Array.Empty<byte>()
-                .Concat(new byte [] {0,0,0,13})
+                .Concat(new byte [] {0,0,0,19})
                 .Append((byte)BitTorrentMessageType.Request)
                 .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append(pieceIndex)
                 .Concat(BitConverter.GetBytes(i*16384))
@@ -152,7 +152,7 @@ else if (command == "download_piece")
 
             var pieceLenBuffer = new byte[4];
             stream.Read(pieceLenBuffer, 0, pieceLenBuffer.Length);
-            var pieceLen = BitConverter.ToInt32(pieceLenBuffer.Reverse().ToArray(), 0);//BinaryPrimitives.ReadInt32BigEndian(pieceLenBuffer);
+            var pieceLen = BinaryPrimitives.ReadInt32BigEndian(pieceLenBuffer);
             if (pieceLen == 0) break;
             Console.WriteLine($"reading pieceLen {pieceLen}");
             stream.ReadByte(); // messageId
@@ -171,7 +171,6 @@ else if (command == "download_piece")
         // }
         Console.WriteLine($"Piece Hash: {Convert.ToHexString(pieceHash).ToLower()}");
         //Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
-        Console.WriteLine($"Piece Length: {piece.Count}");
     }
     File.WriteAllBytes(path, piece.ToArray());
 }
