@@ -142,17 +142,20 @@ else if (command == "download_piece")
         for (var i = 0; totalReadByte < info!.Info!.PieceLength; i++)
         {
             var size = (int)Math.Min(info!.Info!.PieceLength - totalReadByte, 16384);
+            var begin = BitConverter.GetBytes(i * 16384);
+            var length = BitConverter.GetBytes(size);
+            Array.Reverse(begin);
+            Array.Reverse(length);
             var requestBuffer = Array.Empty<byte>()
-                .Concat(BitConverter.GetBytes(17))
+                .Concat(new byte[] {0,0,0,17})
                 .Append((byte)BitTorrentMessageType.Request)
                 .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append(pieceIndex)
-                .Concat(BitConverter.GetBytes(i*16384))
-                .Concat(BitConverter.GetBytes(size))
+                .Concat(begin)
+                .Concat(length)
                 .ToArray();
             Console.WriteLine($"RequestBuffer id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
             totalReadByte += size;
             stream.Write(requestBuffer);
-
             var pieceLenBuffer = new byte[4];
             stream.Read(pieceLenBuffer, 0 ,4);
             var pieceLen = BinaryPrimitives.ReadUInt32BigEndian(pieceLenBuffer[..4]);
