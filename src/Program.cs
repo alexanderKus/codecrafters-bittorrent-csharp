@@ -104,9 +104,11 @@ else if (command == "download_piece")
     var responseString = reader.ReadToEnd();
     parser = new BitTorrentParser(responseBytes);
     var parsedResponse = parser.Parse(responseString);
-    var peers = ((BitTorrentByteArray)((BitTorrentDictionary)parsedResponse).GetByString("peers")).Value.Chunk(6);
-    foreach (var peer in peers)
+    var peers = ((BitTorrentByteArray)((BitTorrentDictionary)parsedResponse).GetByString("peers")).Value.Chunk(6).ToArray();
+    var hashes = info!.Info!.Pieces!.Chunk(20).Select(x => Convert.ToHexString(x).ToLower()).ToArray();
+    for (var index = 0 ; index < peers.Length; index++)
     {
+        var peer = peers[index];
         var data = Array.Empty<byte>()
             .Append((byte)19)
             .Concat("BitTorrent protocol"u8.ToArray())
@@ -152,6 +154,8 @@ else if (command == "download_piece")
             piece.AddRange(pieceBuffer[14..].ToArray());
         }
         var pieceHash = SHA1.HashData(piece.ToArray());
+        if (Convert.ToHexString(pieceHash).ToLower() != hashes[index])
+            throw new Exception($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
         // TODO: compare hashes
         Console.WriteLine($"Piece Hash: {Convert.ToHexString(pieceHash).ToLower()}");
         Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
