@@ -142,9 +142,9 @@ else if (command == "download_piece")
         {
             var size = (int)Math.Min(info!.Info!.PieceLength - totalReadByte, 16384);
             var requestBuffer = Array.Empty<byte>()
-                .Concat(new byte [] {0,0,0,13})
+                .Concat(new byte [] {0,0,0,19})
                 .Append((byte)BitTorrentMessageType.Request)
-                .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append((byte)i)
+                .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append(pieceIndex)
                 .Concat(BitConverter.GetBytes(i*16384))
                 .Concat(BitConverter.GetBytes(size))
                 .ToArray();
