@@ -148,6 +148,7 @@ else if (command == "download_piece")
             stream.Read(pieceBuffer);
             Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
         }
+        Console.WriteLine("here");
         
     }
 }
