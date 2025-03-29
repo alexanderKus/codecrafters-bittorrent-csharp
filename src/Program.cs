@@ -107,7 +107,7 @@ else if (command == "download_piece")
     var hashes = info!.Info!.Pieces!.Chunk(20).Select(x => Convert.ToHexString(x).ToLower()).ToArray();
     Console.WriteLine(string.Join('\n', hashes));
     List<byte> pieces = [];
-    for (var index = 0 ; index < peers.Length; index++)
+    for (var index = 2; index < peers.Length; index++)
     {
         Console.WriteLine("----------------------------------------------------");
         var peer = peers[index];
@@ -140,8 +140,8 @@ else if (command == "download_piece")
         List<byte> piece = [];
         var fileLength = (int)info!.Info!.Length;
         var pieceLength = (int)info!.Info!.PieceLength;
-        var endOfBlock = (index + 1) * info!.Info!.PieceLength;
-        var actualPieceLength = endOfBlock > fileLength ? fileLength - (index * pieceLength) : pieceLength;
+        var endOfBlock = (pieceIndex + 1) * info!.Info!.PieceLength;
+        var actualPieceLength = endOfBlock > fileLength ? fileLength - (pieceIndex * pieceLength) : pieceLength;
         var blockLength = 16 * 1024;
         for (var i = 0; actualPieceLength > 0; i++)
         {
