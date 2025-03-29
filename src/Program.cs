@@ -199,9 +199,7 @@ else if (command == "download")
     var peers = ((BitTorrentByteArray)((BitTorrentDictionary)parsedResponse).GetByString("peers")).Value.Chunk(6).ToArray();
     var hashes = info!.Info!.Pieces!.Chunk(20).Select(x => Convert.ToHexString(x).ToLower()).ToArray();
     List<byte> pieces = [];
-    var index = 0;
-    Console.WriteLine("----------------------------------------------------");
-    var peer = peers[index];
+    var peer = peers[0];
     var data = Array.Empty<byte>()
         .Append((byte)19)
         .Concat("BitTorrent protocol"u8.ToArray())
@@ -234,6 +232,7 @@ else if (command == "download")
     var pieceLength = (int)info!.Info!.PieceLength;
     for (var j = 0; j < m; j++)
     {
+        Console.WriteLine("----------------------------------------------------");
         List<byte> piece = [];
         var endOfBlock = (j + 1) * info!.Info!.PieceLength;
         var actualPieceLength = endOfBlock > fileLength ? fileLength - (j * pieceLength) : pieceLength;
@@ -265,7 +264,7 @@ else if (command == "download")
         }
         pieces.AddRange(piece);
         var pieceHash = SHA1.HashData(piece.ToArray());
-        Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[index]}");
+        Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[j]}");
         Console.WriteLine($"Piece Len: {piece.Count}");
         Console.WriteLine("----------------------------------------------------");
     }
