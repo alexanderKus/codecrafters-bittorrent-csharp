@@ -138,7 +138,7 @@ else if (command == "download_piece")
         var totalReadByte = 0;
         for (var i = 0; totalReadByte < info!.Info!.PieceLength; i++)
         {
-            var size = (int)Math.Min(info!.Info!.PieceLength - i * 16384, 16384);
+            var size = (int)Math.Min(info!.Info!.PieceLength - totalReadByte, 16384);
             var requestBuffer = Array.Empty<byte>()
                 .Concat(new byte [] {0,0,0,19})
                 .Append((byte)BitTorrentMessageType.Request)
