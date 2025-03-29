@@ -109,6 +109,7 @@ else if (command == "download_piece")
     List<byte> piece = [];
     for (var index = 0 ; index < peers.Length; index++)
     {
+        Console.WriteLine("----------------------------------------------------");
         var peer = peers[index];
         var data = Array.Empty<byte>()
             .Append((byte)19)
@@ -176,6 +177,7 @@ else if (command == "download_piece")
         // }
         Console.WriteLine($"Piece Hash: {Convert.ToHexString(pieceHash).ToLower()}");
         //Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
+        Console.WriteLine("----------------------------------------------------");
     }
     File.WriteAllBytes(path, piece.ToArray());
 }
