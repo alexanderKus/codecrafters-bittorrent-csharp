@@ -147,7 +147,7 @@ else if (command == "download_piece")
             Array.Reverse(begin);
             Array.Reverse(length);
             var requestBuffer = Array.Empty<byte>()
-                .Concat(new byte[] {0,0,0,17})
+                .Concat(new byte[] {0,0,0,19})
                 .Append((byte)BitTorrentMessageType.Request)
                 .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append(pieceIndex)
                 .Concat(begin)
@@ -158,9 +158,8 @@ else if (command == "download_piece")
             stream.Write(requestBuffer);
             var pieceLenBuffer = new byte[4];
             stream.Read(pieceLenBuffer, 0 ,pieceLenBuffer.Length);
-            var pieceLen = BitConverter.ToInt32(pieceLenBuffer.Reverse().ToArray(), 0);
+            var pieceLen = BinaryPrimitives.ReadInt32BigEndian(pieceLenBuffer);
             Console.WriteLine($"--->Reading pieceLen {pieceLen}");
-            if (pieceLen == 0) break;
             stream.ReadByte(); // messageId
             var pieceBuffer = new byte[pieceLen-1];
             stream.Read(pieceBuffer, 0 ,pieceBuffer.Length);
