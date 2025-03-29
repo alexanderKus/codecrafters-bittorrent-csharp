@@ -143,7 +143,7 @@ else if (command == "download_piece")
         {
             var size = (int)Math.Min(info!.Info!.PieceLength - totalReadByte, 16384);
             var requestBuffer = Array.Empty<byte>()
-                .Concat(BitConverter.GetBytes(13))
+                .Concat(BitConverter.GetBytes(17))
                 .Append((byte)BitTorrentMessageType.Request)
                 .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append(pieceIndex)
                 .Concat(BitConverter.GetBytes(i*16384))
@@ -153,21 +153,20 @@ else if (command == "download_piece")
             totalReadByte += size;
             stream.Write(requestBuffer);
 
-            var pieceBuffer = new byte[16384];
-            //var pieceLenBuffer = new byte[4];
-            stream.Read(pieceBuffer);
-            var pieceLen = BinaryPrimitives.ReadUInt32BigEndian(pieceBuffer[..4]);
+            var pieceLenBuffer = new byte[4];
+            stream.Read(pieceLenBuffer, 0 ,4);
+            var pieceLen = BinaryPrimitives.ReadUInt32BigEndian(pieceLenBuffer[..4]);
             // if (pieceLen == 0)
             // {
             //     Console.WriteLine("Why piece len is zero?");
             //     break;
             // }
             Console.WriteLine($"--->Reading pieceLen {pieceLen}");
-            //stream.ReadByte(); // messageId
-            //var pieceBuffer = new byte[pieceLen-1];
-            //stream.Read(pieceBuffer, 0 ,pieceBuffer.Length);
-            Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer[..(13+pieceLen)]).ToLower()}");
-            piece.AddRange(pieceBuffer[13..].ToArray());
+            stream.ReadByte(); // messageId
+            var pieceBuffer = new byte[pieceLen-1];
+            stream.Read(pieceBuffer, 0 ,pieceBuffer.Length);
+            Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer[..128]).ToLower()}");
+            piece.AddRange(pieceBuffer[8..].ToArray());
         }
         //var pieceHash = SHA1.HashData(piece.ToArray());
         // if (Convert.ToHexString(pieceHash).ToLower() != hashes[index])
