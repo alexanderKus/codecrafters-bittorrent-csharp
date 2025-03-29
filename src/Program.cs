@@ -162,7 +162,7 @@ else if (command == "download_piece")
             }
             Console.WriteLine($"--->Reading pieceLen {pieceLen}");
             stream.ReadByte(); // messageId
-            var pieceBuffer = new byte[pieceLen];
+            var pieceBuffer = new byte[pieceLen-1];
             stream.Read(pieceBuffer, 0 ,pieceBuffer.Length);
             //Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
             piece.AddRange(pieceBuffer[8..].ToArray());
