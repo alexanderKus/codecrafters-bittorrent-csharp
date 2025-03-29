@@ -134,7 +134,7 @@ else if (command == "download_piece")
         {
             var len = (i == 15 ? info!.Info!.Length % info!.Info!.PieceLength : info!.Info!.PieceLength) ?? throw new Exception("Cannot calculate length of a piece");
             var requestBuffer = Array.Empty<byte>()
-                .Append((byte)19)
+                .Concat(new byte [] {0,0,0,19})
                 .Append((byte)BitTorrentMessageType.Request)
                 .Append(pieceIndex).Append((byte)0x0).Append((byte)0x0).Append((byte)0x0)
                 .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append((byte)0x0) // 0 as integer
