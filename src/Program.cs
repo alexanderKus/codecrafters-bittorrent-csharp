@@ -153,6 +153,7 @@ else if (command == "download_piece")
 
             var pieceLen = new byte[4];
             stream.ReadExactly(pieceLen, 0, pieceLen.Length);
+            Console.WriteLine("reading pieceLen");
             stream.ReadByte(); // messageId
             var pieceBuffer = new byte[BinaryPrimitives.ReadInt32BigEndian(pieceLen)-1];
             stream.ReadExactly(pieceBuffer, 0 ,pieceBuffer.Length);
