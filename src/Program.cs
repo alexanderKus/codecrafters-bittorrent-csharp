@@ -149,9 +149,10 @@ else if (command == "download_piece")
             var pieceBuffer = new byte[1024];
             stream.Read(pieceBuffer);
             Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
-            piece.AddRange(pieceBuffer.ToArray());
+            piece.AddRange(pieceBuffer[14..].ToArray());
         }
         var pieceHash = SHA1.HashData(piece.ToArray());
+        Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
         outputFile.Write(piece.ToArray());
     }
 }
