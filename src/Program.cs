@@ -169,15 +169,8 @@ else if (command == "download_piece")
             var responseBlockLength = BitConverter.ToInt32(pieceBuffer.Take(4).Reverse().ToArray()) - 9;
             piece.AddRange(pieceBuffer[13..responseBlockLength].ToArray());
         }
-        //var pieceHash = SHA1.HashData(piece.ToArray());
-        // if (Convert.ToHexString(pieceHash).ToLower() != hashes[index])
-        // {
-        //     Console.WriteLine($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
-        //     Console.WriteLine($"All hashes:\n{string.Join('\n', hashes)}");
-        //     throw new Exception($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
-        // }
-        //Console.WriteLine($"Piece Hash: {Convert.ToHexString(pieceHash).ToLower()}");
-        //Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
+        var pieceHash = SHA1.HashData(piece.ToArray());
+        Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[index]}");
         Console.WriteLine($"Piece Len: {piece.Count}");
         pieces.AddRange(piece);
         Console.WriteLine("----------------------------------------------------");
