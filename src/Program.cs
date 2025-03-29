@@ -136,10 +136,10 @@ else if (command == "download_piece")
             var requestBuffer = Array.Empty<byte>()
                 .Append((byte)0x40).Append((byte)0x0) // 0x4000 is 1024
                 .Append((byte)BitTorrentMessageType.Request)
-                .Append(pieceIndex)
-                .Append((byte)0x0)
+                .Append(pieceIndex).Append((byte)0x0).Append((byte)0x0).Append((byte)0x0)
+                .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append((byte)0x0) // 0 as integer
                 .Concat(BitConverter.GetBytes(i*(2^14)))
-                .Concat(BitConverter.GetBytes(len))
+                .Concat(BitConverter.GetBytes((int)len))
                 .ToArray();
             Console.WriteLine($"RequestBuffer: {Convert.ToHexString(requestBuffer).ToLower()}");
             stream.Write(requestBuffer);
