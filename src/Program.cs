@@ -136,15 +136,16 @@ else if (command == "download_piece")
         stream.Read(unchokeBuffer);
         Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
         List<byte> piece = new();
-        for (var i = 0; i < 16; i++)
+        var len = Math.Min(info.Info.Length ?? 0 - pieceIndex * info.Info.PieceLength,  info.Info.PieceLength);
+        for (var i = 0; i < (double)len/16384; i++)
         {
-            var len = (i == 15 ? info!.Info!.Length % info!.Info!.PieceLength : info!.Info!.PieceLength) ?? throw new Exception("Cannot calculate length of a piece");
+            //var len = (i == 15 ? info!.Info!.Length % info!.Info!.PieceLength : info!.Info!.PieceLength) ?? throw new Exception("Cannot calculate length of a piece");
             var requestBuffer = Array.Empty<byte>()
                 .Concat(new byte [] {0,0,0,13})
                 .Append((byte)BitTorrentMessageType.Request)
                 .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append(pieceIndex)
                 .Concat(BitConverter.GetBytes(i*16384))
-                .Concat(BitConverter.GetBytes((int)len))
+                .Concat(BitConverter.GetBytes(Math.Min(16384,(int)len - i * 16384)))
                 .ToArray();
             Console.WriteLine($"RequestBuffer id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
             stream.Write(requestBuffer);
