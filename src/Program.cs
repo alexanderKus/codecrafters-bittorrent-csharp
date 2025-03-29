@@ -228,13 +228,13 @@ else if (command == "download")
     var unchokeBuffer = new byte[128];
     stream.Read(unchokeBuffer);
     //Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
-    List<byte> piece = [];
     var m = info.Info.Pieces.Length / 20;
     Console.WriteLine($"Max: {m}");
-    for (int j = 0; j < m; j++)
+    var fileLength = (int)info!.Info!.Length;
+    var pieceLength = (int)info!.Info!.PieceLength;
+    for (var j = 0; j < m; j++)
     {
-        var fileLength = (int)info!.Info!.Length;
-        var pieceLength = (int)info!.Info!.PieceLength;
+        List<byte> piece = [];
         var endOfBlock = (j + 1) * info!.Info!.PieceLength;
         var actualPieceLength = endOfBlock > fileLength ? fileLength - (j * pieceLength) : pieceLength;
         var blockLength = 16 * 1024;
@@ -265,10 +265,10 @@ else if (command == "download")
         }
         pieces.AddRange(piece);
         var pieceHash = SHA1.HashData(piece.ToArray());
-        if (Convert.ToHexString(pieceHash).ToLower() == hashes[index]) break;
         Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[index]}");
         Console.WriteLine($"Piece Len: {piece.Count}");
         Console.WriteLine("----------------------------------------------------");
+        if (Convert.ToHexString(pieceHash).ToLower() == hashes[index]) break;
     }
     File.WriteAllBytes(path, pieces.ToArray());
 }
