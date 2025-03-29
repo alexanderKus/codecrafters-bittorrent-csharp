@@ -167,7 +167,7 @@ else if (command == "download_piece")
             var pieceBuffer = new byte[blockLength + 13];
             await stream.ReadExactlyAsync(pieceBuffer, 0, size + 13);
             var responseBlockLength = BitConverter.ToInt32(pieceBuffer.Take(4).Reverse().ToArray()) - 9;
-            piece.AddRange(pieceBuffer[..responseBlockLength].ToArray());
+            piece.AddRange(pieceBuffer[13..responseBlockLength].ToArray());
         }
         var pieceHash = SHA1.HashData(piece.ToArray());
         Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[index]}");
