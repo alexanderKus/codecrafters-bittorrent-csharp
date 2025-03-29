@@ -166,7 +166,7 @@ else if (command == "download_piece")
             //stream.ReadByte(); // messageId
             //var pieceBuffer = new byte[pieceLen-1];
             //stream.Read(pieceBuffer, 0 ,pieceBuffer.Length);
-            Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer[..1024]).ToLower()}");
+            Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer[..(13+pieceLen)]).ToLower()}");
             piece.AddRange(pieceBuffer[13..].ToArray());
         }
         //var pieceHash = SHA1.HashData(piece.ToArray());
