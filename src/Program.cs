@@ -121,7 +121,7 @@ else if (command == "download_piece")
         Console.WriteLine($"Peer ID: {Convert.ToHexString(buffer[48..]).ToLower()}");
         var bitFieldBuffer = new byte[128];
         stream.Read(bitFieldBuffer);
-        Console.WriteLine($"BitFieldBuffer: {Convert.ToHexString(buffer).ToLower()}");
+        Console.WriteLine($"BitFieldBuffer: {Convert.ToHexString(bitFieldBuffer).ToLower()}");
         var interestedBuffer = Array.Empty<byte>()
             .Concat(new byte [] {0,0,0,1})
             .Append((byte)BitTorrentMessageType.Interested)
@@ -129,7 +129,7 @@ else if (command == "download_piece")
         stream.Write(interestedBuffer);
         var unchokeBuffer = new byte[128];
         stream.Read(unchokeBuffer);
-        Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(buffer).ToLower()}");
+        Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
     }
 }
 else
