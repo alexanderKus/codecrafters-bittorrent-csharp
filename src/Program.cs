@@ -107,7 +107,7 @@ else if (command == "download_piece")
     var hashes = info!.Info!.Pieces!.Chunk(20).Select(x => Convert.ToHexString(x).ToLower()).ToArray();
     Console.WriteLine(string.Join('\n', hashes));
     List<byte> pieces = [];
-    for (var index = 2 ; index < peers.Length; index++)
+    for (var index = 0 ; index < peers.Length; index++)
     {
         Console.WriteLine("----------------------------------------------------");
         var peer = peers[index];
@@ -137,7 +137,6 @@ else if (command == "download_piece")
         var unchokeBuffer = new byte[128];
         stream.Read(unchokeBuffer);
         //Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
-        var totalReadByte = 0;
         List<byte> piece = [];
         var fileLength = (int)info!.Info!.Length;
         var pieceLength = (int)info!.Info!.PieceLength;
