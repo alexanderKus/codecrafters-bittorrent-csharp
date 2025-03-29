@@ -136,10 +136,9 @@ else if (command == "download_piece")
         stream.Read(unchokeBuffer);
         Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
         var totalReadByte = 0;
-        for (var i = 0; totalReadByte < info!.Info!.Length; i++)
+        for (var i = 0; totalReadByte < info!.Info!.PieceLength; i++)
         {
             var size = (int)Math.Min(info!.Info!.PieceLength - i * 16384, 16384);
-            Console.WriteLine($"Size: {size}, total length:{info!.Info!.Length}");
             var requestBuffer = Array.Empty<byte>()
                 .Concat(new byte [] {0,0,0,19})
                 .Append((byte)BitTorrentMessageType.Request)
