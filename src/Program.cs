@@ -87,6 +87,7 @@ else if (command == "download_piece")
     var path = args[2];
     var torrentFile = args[3];
     var pieceIndex = byte.Parse(args[4]);
+    var outputFile = File.Create(path); 
     using var file = new StreamReader(torrentFile, Encoding.ASCII);
     var content = file.ReadToEnd();
     var bytes = File.ReadAllBytes(torrentFile);
@@ -99,7 +100,6 @@ else if (command == "download_piece")
     var responseBytes = await response.Content.ReadAsByteArrayAsync();
     using var reader = new StreamReader(await response.Content.ReadAsStreamAsync());
     var responseString = reader.ReadToEnd();
-    Console.WriteLine(Convert.ToHexString(responseBytes).ToLower());
     parser = new BitTorrentParser(responseBytes);
     var parsedResponse = parser.Parse(responseString);
     var peers = ((BitTorrentByteArray)((BitTorrentDictionary)parsedResponse).GetByString("peers")).Value.Chunk(6);
@@ -130,6 +130,23 @@ else if (command == "download_piece")
         var unchokeBuffer = new byte[128];
         stream.Read(unchokeBuffer);
         Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
+        for (var i = 0; i < 16; i++)
+        {
+            var len = (i == 15 ? info!.Info!.Length % info!.Info!.PieceLength : info!.Info!.PieceLength) ?? throw new Exception("Cannot calculate length of a piece");
+            var requestBuffer = Array.Empty<byte>()
+                .Append((byte)0x40).Append((byte)0x0) // 0x4000 is 1024
+                .Append(pieceIndex)
+                .Append((byte)0x0)
+                .Concat(BitConverter.GetBytes(i*(2^14)))
+                .Concat(BitConverter.GetBytes(len))
+                .ToArray();
+            stream.Write(requestBuffer);
+            
+            var pieceBuffer = new byte[2^14];
+            stream.Read(pieceBuffer);
+            Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
+        }
+        
     }
 }
 else
