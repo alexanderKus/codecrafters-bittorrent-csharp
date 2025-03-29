@@ -168,7 +168,7 @@ else if (command == "download_piece")
         }
         Console.WriteLine($"Piece Hash: {Convert.ToHexString(pieceHash).ToLower()}");
         Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
-        outputFile.Write(piece.ToArray());
+        //outputFile.Write(piece.ToArray());
     }
 }
 else
