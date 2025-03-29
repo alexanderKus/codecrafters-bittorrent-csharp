@@ -131,6 +131,7 @@ else if (command == "download_piece")
             .Append((byte)BitTorrentMessageType.Interested)
             .ToArray();
         stream.Write(interestedBuffer);
+        stream.Flush();
         var unchokeBuffer = new byte[128];
         stream.Read(unchokeBuffer);
         Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
@@ -147,6 +148,7 @@ else if (command == "download_piece")
                 .ToArray();
             Console.WriteLine($"RequestBuffer id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
             stream.Write(requestBuffer);
+            stream.Flush();
             
             var pieceBuffer = new byte[16384];
             stream.Read(pieceBuffer);
