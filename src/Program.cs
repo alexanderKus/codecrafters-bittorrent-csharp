@@ -268,7 +268,6 @@ else if (command == "download")
         Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[index]}");
         Console.WriteLine($"Piece Len: {piece.Count}");
         Console.WriteLine("----------------------------------------------------");
-        if (Convert.ToHexString(pieceHash).ToLower() == hashes[index]) break;
     }
     File.WriteAllBytes(path, pieces.ToArray());
 }
