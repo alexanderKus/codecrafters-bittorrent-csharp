@@ -105,6 +105,7 @@ else if (command == "download_piece")
     var parsedResponse = parser.Parse(responseString);
     var peers = ((BitTorrentByteArray)((BitTorrentDictionary)parsedResponse).GetByString("peers")).Value.Chunk(6).ToArray();
     var hashes = info!.Info!.Pieces!.Chunk(20).Select(x => Convert.ToHexString(x).ToLower()).ToArray();
+    Console.WriteLine(string.Join('\n', hashes));
     List<byte> piece = [];
     for (var index = 0 ; index < peers.Length; index++)
     {
