@@ -155,8 +155,10 @@ else if (command == "download_piece")
         }
         var pieceHash = SHA1.HashData(piece.ToArray());
         if (Convert.ToHexString(pieceHash).ToLower() != hashes[index])
+        {
+            Console.WriteLine($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
             throw new Exception($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
-        // TODO: compare hashes
+        }
         Console.WriteLine($"Piece Hash: {Convert.ToHexString(pieceHash).ToLower()}");
         Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
         outputFile.Write(piece.ToArray());
