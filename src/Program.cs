@@ -141,7 +141,7 @@ else if (command == "download_piece")
                 .Concat(BitConverter.GetBytes(i*(2^14)))
                 .Concat(BitConverter.GetBytes((int)len))
                 .ToArray();
-            Console.WriteLine($"RequestBuffer: {Convert.ToHexString(requestBuffer).ToLower()}");
+            Console.WriteLine($"RequestBuffer id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
             stream.Write(requestBuffer);
             
             var pieceBuffer = new byte[2^14];
