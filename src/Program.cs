@@ -128,7 +128,8 @@ else if (command == "download_piece")
             .ToArray();
         stream.Write(interestedBuffer);
         var unchokeBuffer = new byte[5];
-        stream.Write(unchokeBuffer);
+        stream.Read(unchokeBuffer);
+        Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(buffer).ToLower()}");
     }
 }
 else
