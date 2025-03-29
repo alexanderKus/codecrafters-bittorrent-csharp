@@ -149,14 +149,13 @@ else if (command == "download_piece")
                 .ToArray();
             Console.WriteLine($"RequestBuffer id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
             stream.Write(requestBuffer);
-            stream.Flush();
 
             var pieceLen = new byte[4];
-            stream.ReadExactly(pieceLen, 0, pieceLen.Length);
+            stream.Read(pieceLen, 0, pieceLen.Length);
             Console.WriteLine($"reading pieceLen {BinaryPrimitives.ReadInt32BigEndian(pieceLen)}");
             stream.ReadByte(); // messageId
             var pieceBuffer = new byte[BinaryPrimitives.ReadInt32BigEndian(pieceLen)-1];
-            stream.ReadExactly(pieceBuffer, 0 ,pieceBuffer.Length);
+            stream.Read(pieceBuffer, 0 ,pieceBuffer.Length);
             Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
             piece.AddRange(pieceBuffer[8..].ToArray());
         }
