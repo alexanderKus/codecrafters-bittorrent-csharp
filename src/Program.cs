@@ -84,9 +84,9 @@ else if (command == "handshake")
 }
 else if (command == "download_piece")
 {
-    var path = args[3];
-    var torrentFile = args[4];
-    var pieceIndex = byte.Parse(args[5]);
+    var path = args[2];
+    var torrentFile = args[3];
+    var pieceIndex = byte.Parse(args[4]);
     using var file = new StreamReader(torrentFile, Encoding.ASCII);
     var content = file.ReadToEnd();
     var bytes = File.ReadAllBytes(torrentFile);
@@ -114,7 +114,7 @@ else if (command == "download_piece")
             .ToArray();
         var tcpClient = new TcpClient($"{peer[0]}.{peer[1]}.{peer[2]}.{peer[3]}", BinaryPrimitives.ReadUInt16BigEndian(peer.AsSpan()[4..]));
         var buffer = new byte[data.Length];
-        using var stream = tcpClient.GetStream();
+        await using var stream = tcpClient.GetStream();
         stream.Write(data);
         stream.Flush();
         stream.Read(buffer);
