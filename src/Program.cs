@@ -158,7 +158,7 @@ else if (command == "download_piece")
             stream.ReadByte(); // messageId
             var pieceBuffer = new byte[pieceLen-1];
             stream.Read(pieceBuffer, 0 ,pieceBuffer.Length);
-            Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
+            //Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
             piece.AddRange(pieceBuffer[8..].ToArray());
         }
         var pieceHash = SHA1.HashData(piece.ToArray());
@@ -170,7 +170,7 @@ else if (command == "download_piece")
         //     throw new Exception($"Hashes do not match. {Convert.ToHexString(pieceHash).ToLower()} != {hashes[index]}");
         // }
         Console.WriteLine($"Piece Hash: {Convert.ToHexString(pieceHash).ToLower()}");
-        Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
+        //Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
         Console.WriteLine($"Piece Length: {piece.Count}");
     }
     File.WriteAllBytes(path, piece.ToArray());
