@@ -157,7 +157,7 @@ else if (command == "download_piece")
             totalReadByte += size;
             stream.Write(requestBuffer);
             var pieceLenBuffer = new byte[4];
-            stream.Read(pieceLenBuffer, 0 ,4);
+            stream.Read(pieceLenBuffer, 0 ,pieceLenBuffer.Length);
             var pieceLen = BinaryPrimitives.ReadInt32BigEndian(pieceLenBuffer);
             // if (pieceLen == 0)
             // {
