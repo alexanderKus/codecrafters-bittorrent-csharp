@@ -263,11 +263,11 @@ else if (command == "download")
             var responseBlockLength = BitConverter.ToInt32(pieceBuffer[..4].Reverse().ToArray()) - 9;
             piece.AddRange(pieceBuffer[13..(13+responseBlockLength)].ToArray());
         }
+        pieces.AddRange(piece);
         var pieceHash = SHA1.HashData(piece.ToArray());
         if (Convert.ToHexString(pieceHash).ToLower() == hashes[index]) break;
         Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[index]}");
         Console.WriteLine($"Piece Len: {piece.Count}");
-        pieces.AddRange(piece);
         Console.WriteLine("----------------------------------------------------");
     }
     File.WriteAllBytes(path, pieces.ToArray());
