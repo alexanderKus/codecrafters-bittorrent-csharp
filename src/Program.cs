@@ -136,26 +136,28 @@ else if (command == "download_piece")
         stream.Read(unchokeBuffer);
         Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
         List<byte> piece = new();
-        for (var i = 0; i < 16; i++)
+        var totalReadByte = 0;
+        for (var i = 0; totalReadByte < info!.Info!.Length; i++)
         {
-            var len = (i == 15 ? info!.Info!.Length % info!.Info!.PieceLength : info!.Info!.PieceLength) ?? throw new Exception("Cannot calculate length of a piece");
+            var size = (int)Math.Min(info!.Info!.Length ?? 0 - i * info!.Info!.PieceLength, info!.Info!.PieceLength);
             var requestBuffer = Array.Empty<byte>()
                 .Concat(new byte [] {0,0,0,13})
                 .Append((byte)BitTorrentMessageType.Request)
                 .Append((byte)0x0).Append((byte)0x0).Append((byte)0x0).Append(pieceIndex)
                 .Concat(BitConverter.GetBytes(i*16384))
-                .Concat(BitConverter.GetBytes((int)len))
+                .Concat(BitConverter.GetBytes(size))
                 .ToArray();
             Console.WriteLine($"RequestBuffer id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
+            totalReadByte += size;
             stream.Write(requestBuffer);
 
-            var pieceLen = new byte[4];
-            stream.Read(pieceLen, 0, pieceLen.Length);
-            if (BinaryPrimitives.ReadInt32BigEndian(pieceLen) == 0)
-                break;
-            Console.WriteLine($"reading pieceLen {BinaryPrimitives.ReadInt32BigEndian(pieceLen)}");
+            var pieceLenBuffer = new byte[4];
+            stream.Read(pieceLenBuffer, 0, pieceLenBuffer.Length);
+            var pieceLen = BinaryPrimitives.ReadInt32BigEndian(pieceLenBuffer);
+            if (pieceLen == 0) break;
+            Console.WriteLine($"reading pieceLen {pieceLen}");
             stream.ReadByte(); // messageId
-            var pieceBuffer = new byte[BinaryPrimitives.ReadInt32BigEndian(pieceLen)-1];
+            var pieceBuffer = new byte[pieceLen-1];
             stream.Read(pieceBuffer, 0 ,pieceBuffer.Length);
             Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
             piece.AddRange(pieceBuffer[8..].ToArray());
