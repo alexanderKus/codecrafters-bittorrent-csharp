@@ -135,7 +135,7 @@ else if (command == "download_piece")
         var unchokeBuffer = new byte[128];
         stream.Read(unchokeBuffer);
         Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
-        List<byte> piece = new();
+        List<byte> piece = [];
         var totalReadByte = 0;
         for (var i = 0; totalReadByte < info!.Info!.Length; i++)
         {
@@ -173,6 +173,7 @@ else if (command == "download_piece")
         Console.WriteLine($"Piece Hash: {Convert.ToHexString(pieceHash).ToLower()}");
         Console.WriteLine($"Piece {Convert.ToHexString(piece.ToArray()).ToLower()}");
         outputFile.Write(piece.ToArray());
+        break;
     }
 }
 else
