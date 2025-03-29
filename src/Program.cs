@@ -148,7 +148,7 @@ else if (command == "download_piece")
             Console.WriteLine($"RequestBuffer id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
             stream.Write(requestBuffer);
             
-            var pieceBuffer = new byte[(2^14+13)];
+            var pieceBuffer = new byte[16384];
             stream.Read(pieceBuffer);
             Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
             piece.AddRange(pieceBuffer[13..].ToArray());
