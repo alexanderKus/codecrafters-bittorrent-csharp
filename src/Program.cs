@@ -153,7 +153,7 @@ else if (command == "download_piece")
             var pieceLen = new byte[4];
             stream.ReadExactly(pieceLen, 0, pieceLen.Length);
             var pieceBuffer = new byte[BinaryPrimitives.ReadInt32BigEndian(pieceLen)];
-            stream.Read(pieceBuffer);
+            stream.ReadExactly(pieceBuffer, 0 ,pieceBuffer.Length);
             Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
             piece.AddRange(pieceBuffer[9..].ToArray());
         }
