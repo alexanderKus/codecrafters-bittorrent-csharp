@@ -152,20 +152,21 @@ else if (command == "download_piece")
             totalReadByte += size;
             stream.Write(requestBuffer);
 
-            var pieceLenBuffer = new byte[4];
-            stream.Read(pieceLenBuffer, 0, pieceLenBuffer.Length);
-            var pieceLen = BinaryPrimitives.ReadInt32BigEndian(pieceLenBuffer);
+            var pieceBuffer = new byte[16384];
+            //var pieceLenBuffer = new byte[4];
+            stream.Read(pieceBuffer);
+            var pieceLen = BinaryPrimitives.ReadInt32BigEndian(pieceBuffer[..4]);
             if (pieceLen == 0)
             {
                 Console.WriteLine("Why piece len is zero?");
                 break;
             }
             Console.WriteLine($"--->Reading pieceLen {pieceLen}");
-            stream.ReadByte(); // messageId
-            var pieceBuffer = new byte[pieceLen-1];
-            stream.Read(pieceBuffer, 0 ,pieceBuffer.Length);
+            //stream.ReadByte(); // messageId
+            //var pieceBuffer = new byte[pieceLen-1];
+            //stream.Read(pieceBuffer, 0 ,pieceBuffer.Length);
             //Console.WriteLine($"PieceBuffer: {Convert.ToHexString(pieceBuffer).ToLower()}");
-            piece.AddRange(pieceBuffer[8..].ToArray());
+            piece.AddRange(pieceBuffer[13..].ToArray());
         }
         var pieceHash = SHA1.HashData(piece.ToArray());
         // if (Convert.ToHexString(pieceHash).ToLower() != hashes[index])
