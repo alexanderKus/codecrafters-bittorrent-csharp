@@ -199,74 +199,88 @@ else if (command == "download")
     var peers = ((BitTorrentByteArray)((BitTorrentDictionary)parsedResponse).GetByString("peers")).Value.Chunk(6).ToArray();
     var hashes = info!.Info!.Pieces!.Chunk(20).Select(x => Convert.ToHexString(x).ToLower()).ToArray();
     List<byte> pieces = [];
-    var peer = peers[0];
-    var data = Array.Empty<byte>()
-        .Append((byte)19)
-        .Concat("BitTorrent protocol"u8.ToArray())
-        .Concat(new byte[8])
-        .Concat(info.HashBytes)
-        .Concat("00112233445566778899"u8.ToArray())
-        .ToArray();
-    var tcpClient = new TcpClient($"{peer[0]}.{peer[1]}.{peer[2]}.{peer[3]}", BinaryPrimitives.ReadUInt16BigEndian(peer.AsSpan()[4..]));
-    var buffer = new byte[data.Length];
-    await using var stream = tcpClient.GetStream();
-    stream.Write(data);
-    stream.Flush();
-    stream.Read(buffer);
-    Console.WriteLine($"Peer ID: {Convert.ToHexString(buffer[48..]).ToLower()}");
-    var bitFieldBuffer = new byte[128];
-    stream.Read(bitFieldBuffer);
-    //Console.WriteLine($"BitFieldBuffer: {Convert.ToHexString(bitFieldBuffer).ToLower()}");
-    var interestedBuffer = Array.Empty<byte>()
-        .Concat(new byte [] {0,0,0,1})
-        .Append((byte)BitTorrentMessageType.Interested)
-        .ToArray();
-    stream.Write(interestedBuffer);
-    stream.Flush();
-    var unchokeBuffer = new byte[128];
-    stream.Read(unchokeBuffer);
     //Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
     var m = info.Info.Pieces.Length / 20;
     Console.WriteLine($"Max: {m}");
+    //var tasks = new List<Task<byte[]>>(m);
+    var tasks = new Task<byte[]>[m];
     var fileLength = (int)info!.Info!.Length;
     var pieceLength = (int)info!.Info!.PieceLength;
     for (var j = 0; j < m; j++)
     {
-        Console.WriteLine("----------------------------------------------------");
-        List<byte> piece = [];
-        var endOfBlock = (j + 1) * info!.Info!.PieceLength;
-        var actualPieceLength = endOfBlock > fileLength ? fileLength - (j * pieceLength) : pieceLength;
-        var blockLength = 16 * 1024;
-        for (var i = 0; actualPieceLength > 0; i++)
+        Console.WriteLine($"Running: {j}");
+        int jj = j;
+        tasks[j] = Task.Run(async () =>
         {
-            var size = actualPieceLength < blockLength ? actualPieceLength : blockLength;
-            var begin = BitConverter.GetBytes(i * blockLength);
-            var length = BitConverter.GetBytes(size);
-            var correctPieceIndex = BitConverter.GetBytes(j);
-            Array.Reverse(begin);
-            Array.Reverse(length);
-            Array.Reverse(correctPieceIndex);
-            var requestBuffer = Array.Empty<byte>()
-                .Concat(new byte[] {0,0,0,13})
-                .Append((byte)BitTorrentMessageType.Request)
-                .Concat(correctPieceIndex)
-                .Concat(begin)
-                .Concat(length)
+            var peer = peers[jj];
+            var data = Array.Empty<byte>()
+                .Append((byte)19)
+                .Concat("BitTorrent protocol"u8.ToArray())
+                .Concat(new byte[8])
+                .Concat(info.HashBytes)
+                .Concat("00112233445566778899"u8.ToArray())
                 .ToArray();
-            Console.WriteLine($"RequestBuffer id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
-            actualPieceLength -= blockLength;
-            stream.Write(requestBuffer);
+            var tcpClient = new TcpClient($"{peer[0]}.{peer[1]}.{peer[2]}.{peer[3]}", BinaryPrimitives.ReadUInt16BigEndian(peer.AsSpan()[4..]));
+            var buffer = new byte[data.Length];
+            await using var stream = tcpClient.GetStream();
+            stream.Write(data);
+            stream.Flush();
+            stream.Read(buffer);
+            Console.WriteLine($"Peer ID: {Convert.ToHexString(buffer[48..]).ToLower()}");
+            var bitFieldBuffer = new byte[128];
+            stream.Read(bitFieldBuffer);
+            //Console.WriteLine($"BitFieldBuffer: {Convert.ToHexString(bitFieldBuffer).ToLower()}");
+            var interestedBuffer = Array.Empty<byte>()
+                .Concat(new byte [] {0,0,0,1})
+                .Append((byte)BitTorrentMessageType.Interested)
+                .ToArray();
+            stream.Write(interestedBuffer);
+            stream.Flush();
+            var unchokeBuffer = new byte[128];
+            stream.Read(unchokeBuffer);
+            Console.WriteLine("----------------------------------------------------");
+            List<byte> piece = [];
+            var endOfBlock = (jj + 1) * info!.Info!.PieceLength;
+            var actualPieceLength = endOfBlock > fileLength ? fileLength - (jj * pieceLength) : pieceLength;
+            var blockLength = 16 * 1024;
+            for (var i = 0; actualPieceLength > 0; i++)
+            {
+                var size = actualPieceLength < blockLength ? actualPieceLength : blockLength;
+                var begin = BitConverter.GetBytes(i * blockLength);
+                var length = BitConverter.GetBytes(size);
+                var correctPieceIndex = BitConverter.GetBytes(j);
+                Array.Reverse(begin);
+                Array.Reverse(length);
+                Array.Reverse(correctPieceIndex);
+                var requestBuffer = Array.Empty<byte>()
+                    .Concat(new byte[] {0,0,0,13})
+                    .Append((byte)BitTorrentMessageType.Request)
+                    .Concat(correctPieceIndex)
+                    .Concat(begin)
+                    .Concat(length)
+                    .ToArray();
+                Console.WriteLine($"RequestBuffer id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
+                actualPieceLength -= blockLength;
+                stream.Write(requestBuffer);
         
-            var pieceBuffer = new byte[blockLength + 13];
-            await stream.ReadExactlyAsync(pieceBuffer, 0, size + 13);
-            var responseBlockLength = BitConverter.ToInt32(pieceBuffer[..4].Reverse().ToArray()) - 9;
-            piece.AddRange(pieceBuffer[13..(13+responseBlockLength)].ToArray());
-        }
-        pieces.AddRange(piece);
-        var pieceHash = SHA1.HashData(piece.ToArray());
-        Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[j]}");
-        Console.WriteLine($"Piece Len: {piece.Count}");
-        Console.WriteLine("----------------------------------------------------");
+                var pieceBuffer = new byte[blockLength + 13];
+                await stream.ReadExactlyAsync(pieceBuffer, 0, size + 13);
+                var responseBlockLength = BitConverter.ToInt32(pieceBuffer[..4].Reverse().ToArray()) - 9;
+                piece.AddRange(pieceBuffer[13..(13+responseBlockLength)].ToArray());
+            }
+            var pieceHash = SHA1.HashData(piece.ToArray());
+            Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[j]}");
+            Console.WriteLine($"Piece Len: {piece.Count}");
+            Console.WriteLine("----------------------------------------------------");
+            return piece.ToArray();
+        });   
+        
+    }
+
+    await Task.WhenAll(tasks);
+    foreach (var t in tasks)
+    {
+        pieces.AddRange(t.Result);
     }
     File.WriteAllBytes(path, pieces.ToArray());
 }
