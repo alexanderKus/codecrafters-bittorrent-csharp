@@ -269,7 +269,6 @@ else if (command == "download")
                     //Console.WriteLine($"RequestBuffer {jj} id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
                     actualPieceLength -= blockLength;
                     await stream.WriteAsync(requestBuffer);
-            
                     var pieceBuffer = new byte[blockLength + 13];
                     await stream.ReadExactlyAsync(pieceBuffer, 0, size + 13);
                     var responseBlockLength = BitConverter.ToInt32(pieceBuffer[..4].Reverse().ToArray()) - 9;
