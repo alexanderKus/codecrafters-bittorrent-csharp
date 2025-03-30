@@ -201,7 +201,7 @@ else if (command == "download")
     var hashes = info!.Info!.Pieces!.Chunk(20).Select(x => Convert.ToHexString(x).ToLower()).ToArray();
     List<byte> pieces = [];
     var m = info.Info.Pieces.Length / 20;
-    Console.WriteLine($"Max: {m}, Peers Count: {peers.Length}");
+    //Console.WriteLine($"Max: {m}, Peers Count: {peers.Length}");
     //var tasks = new List<Task<byte[]>>(m);
     var tasks = new Task<byte[]>[m];
     var fileLength = (int)info!.Info!.Length;
@@ -232,7 +232,7 @@ else if (command == "download")
                 stream.Write(data);
                 stream.Flush();
                 stream.Read(buffer);
-                Console.WriteLine($"Peer ID: {Convert.ToHexString(buffer[48..]).ToLower()}");
+                //Console.WriteLine($"Peer ID: {Convert.ToHexString(buffer[48..]).ToLower()}");
                 var bitFieldBuffer = new byte[128];
                 stream.Read(bitFieldBuffer);
                 //Console.WriteLine($"BitFieldBuffer: {Convert.ToHexString(bitFieldBuffer).ToLower()}");
@@ -245,7 +245,7 @@ else if (command == "download")
                 var unchokeBuffer = new byte[128];
                 stream.Read(unchokeBuffer);
                 //Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");v
-                Console.WriteLine("----------------------------------------------------");
+                //Console.WriteLine("----------------------------------------------------");
                 List<byte> piece = [];
                 var endOfBlock = (jj + 1) * info!.Info!.PieceLength;
                 var actualPieceLength = endOfBlock > fileLength ? fileLength - (jj * pieceLength) : pieceLength;
@@ -266,7 +266,7 @@ else if (command == "download")
                         .Concat(begin)
                         .Concat(length)
                         .ToArray();
-                    Console.WriteLine($"RequestBuffer {jj} id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
+                    //Console.WriteLine($"RequestBuffer {jj} id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
                     actualPieceLength -= blockLength;
                     await stream.WriteAsync(requestBuffer);
             
@@ -275,10 +275,10 @@ else if (command == "download")
                     var responseBlockLength = BitConverter.ToInt32(pieceBuffer[..4].Reverse().ToArray()) - 9;
                     piece.AddRange(pieceBuffer[13..(13+responseBlockLength)].ToArray());
                 }
-                var pieceHash = SHA1.HashData(piece.ToArray());
-                Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[jj]}");
-                Console.WriteLine($"Piece Len: {piece.Count}");
-                Console.WriteLine("----------------------------------------------------");
+                //var pieceHash = SHA1.HashData(piece.ToArray());
+                // Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[jj]}");
+                // Console.WriteLine($"Piece Len: {piece.Count}");
+                // Console.WriteLine("----------------------------------------------------");
                 return piece.ToArray();
             }
             finally
