@@ -208,7 +208,6 @@ else if (command == "download")
     var pieceLength = (int)info!.Info!.PieceLength;
     for (var j = 0; j < m; j++)
     {
-        Console.WriteLine($"Running: {j}");
         int jj = j;
         tasks[j] = Task.Run(async () =>
         {
@@ -248,7 +247,7 @@ else if (command == "download")
                 var size = actualPieceLength < blockLength ? actualPieceLength : blockLength;
                 var begin = BitConverter.GetBytes(i * blockLength);
                 var length = BitConverter.GetBytes(size);
-                var correctPieceIndex = BitConverter.GetBytes(j);
+                var correctPieceIndex = BitConverter.GetBytes(jj);
                 Array.Reverse(begin);
                 Array.Reverse(length);
                 Array.Reverse(correctPieceIndex);
@@ -259,7 +258,7 @@ else if (command == "download")
                     .Concat(begin)
                     .Concat(length)
                     .ToArray();
-                Console.WriteLine($"RequestBuffer id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
+                Console.WriteLine($"RequestBuffer {jj} id:{i}: {Convert.ToHexString(requestBuffer).ToLower()}");
                 actualPieceLength -= blockLength;
                 stream.Write(requestBuffer);
         
@@ -269,12 +268,11 @@ else if (command == "download")
                 piece.AddRange(pieceBuffer[13..(13+responseBlockLength)].ToArray());
             }
             var pieceHash = SHA1.HashData(piece.ToArray());
-            Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[j]}");
+            Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[jj]}");
             Console.WriteLine($"Piece Len: {piece.Count}");
             Console.WriteLine("----------------------------------------------------");
             return piece.ToArray();
         });   
-        
     }
 
     await Task.WhenAll(tasks);
