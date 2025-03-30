@@ -201,7 +201,7 @@ else if (command == "download")
     List<byte> pieces = [];
     //Console.WriteLine($"UnchokeBuffer: {Convert.ToHexString(unchokeBuffer).ToLower()}");
     var m = info.Info.Pieces.Length / 20;
-    Console.WriteLine($"Max: {m}");
+    Console.WriteLine($"Max: {m}, Peers Count: {peers.Length}");
     //var tasks = new List<Task<byte[]>>(m);
     var tasks = new Task<byte[]>[m];
     var fileLength = (int)info!.Info!.Length;
@@ -278,7 +278,6 @@ else if (command == "download")
     await Task.WhenAll(tasks);
     foreach (var t in tasks)
     {
-        if (t is null) continue;
         pieces.AddRange(t.Result);
     }
     File.WriteAllBytes(path, pieces.ToArray());
