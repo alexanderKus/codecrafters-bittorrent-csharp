@@ -278,6 +278,7 @@ else if (command == "download")
     await Task.WhenAll(tasks);
     foreach (var t in tasks)
     {
+        if (t is null) continue;
         pieces.AddRange(t.Result);
     }
     File.WriteAllBytes(path, pieces.ToArray());
