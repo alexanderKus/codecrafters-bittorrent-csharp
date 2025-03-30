@@ -183,9 +183,8 @@ else if (command == "download")
 {
     var path = args[2];
     var torrentFile = args[3];
-    using var file = new StreamReader(torrentFile, Encoding.ASCII);
-    var content = file.ReadToEnd();
     var bytes = File.ReadAllBytes(torrentFile);
+    var content = Encoding.ASCII.GetString(bytes);
     BitTorrentParser parser = new(bytes);
     var result = parser.Parse(content);
     var info = BitTorrentParser.ParseMetainfo(bytes, content, result);
