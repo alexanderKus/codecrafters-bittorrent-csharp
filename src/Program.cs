@@ -274,8 +274,8 @@ else if (command == "download")
                     var responseBlockLength = BitConverter.ToInt32(pieceBuffer[..4].Reverse().ToArray()) - 9;
                     piece.AddRange(pieceBuffer[13..(13+responseBlockLength)].ToArray());
                 }
-                //var pieceHash = SHA1.HashData(piece.ToArray());
-                // Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[jj]}");
+                var pieceHash = SHA1.HashData(piece.ToArray());
+                Console.WriteLine($"GOT: {Convert.ToHexString(pieceHash).ToLower()} ? {hashes[jj]}");
                 // Console.WriteLine($"Piece Len: {piece.Count}");
                 // Console.WriteLine("----------------------------------------------------");
                 return piece.ToArray();
